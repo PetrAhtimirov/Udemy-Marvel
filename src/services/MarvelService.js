@@ -1,6 +1,7 @@
 class MarvelServise {
     _apiBase = 'https://gateway.marvel.com:443/v1/public/';
     _apiKey = 'apikey=6cd0b5da891a48a4d3f5ae350908e21c';
+    _baseOffset = 320;
 
     getResource = async (url) => {
         let res = await fetch(url);
@@ -12,8 +13,8 @@ class MarvelServise {
         return await res.json();
     }
 
-    getAllCharacters = async () => {
-        const res = await this.getResource(`${this._apiBase}characters?${this._apiKey}`);
+    getAllCharacters = async (offset = this._baseOffset) => {
+        const res = await this.getResource(`${this._apiBase}characters?limit=9&offset=${offset}&${this._apiKey}`);
         return res.data.results.map(this._transformCharacter);
     }
 
@@ -25,7 +26,7 @@ class MarvelServise {
     _transformCharacter = (char) => {
         let desc = char.description;
         if (desc === '' ) {
-            desc = 'Данные о персонаже отсутствуют.';
+            desc = 'There is no description for this character';
         }
         if (desc.length > 160) {
             desc = `${desc.substr(0, 160)}...`;

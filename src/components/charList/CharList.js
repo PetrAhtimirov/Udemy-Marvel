@@ -1,4 +1,6 @@
 import { Component } from 'react';
+import PropTypes from 'prop-types'
+
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Spinner from '../spinner/Spinner';
 import './charList.scss';
@@ -6,24 +8,41 @@ import MarvelServise from '../../services/MarvelService';
 
 class CharList extends Component {
     state = {
-        chars: [],
+        charList: [],
         loading: true,
-        error: false
+        error: false,
+        newItemLoading: false,
+        offset: 324,
+        charEnded: false
     }
 
     marvelService = new MarvelServise();
 
     componentDidMount() {
-        this.updateChars();
+        this.onRequest();
     }
 
-    componentWillUnmount() {
-        
+    onRequest = (offset) => {
+        this.onCharListLoading();
+        this.marvelService.getAllCharacters(offset)
+            .then(this.onCharListLoaded)
+            .catch(this.onError)
     }
 
-    onCharsLoaded = (chars) => {
-        console.log(chars);
-        this.setState({chars, loading: false});
+    onCharListLoading = () => {
+        this.setState({
+            newItemLoading: true
+        })
+    }
+
+    onCharListLoaded = (newCharList) => {
+        this.setState(({charList, offset}) => ({
+            charList: [...charList, ...newCharList], 
+            loading: false,
+            newItemLoading: false,
+            offset: offset + 9,
+            charEnded: newCharList.length < 9
+        }));
     }
 
     onError = () => {
@@ -40,11 +59,11 @@ class CharList extends Component {
     }
 
     render () {
-        const {chars, loading, error} = this.state;
+        const {charList, loading, error, offset, newItemLoading, charEnded} = this.state;
         const errorMessage = error ? <ErrorMessage/> : null;
         const spinner = loading ? <Spinner/> : null;
 
-        const elements = chars.map(item => {
+        const elements = charList.map(item => {
             return (
                 <li 
                     className="char__item" 
@@ -65,12 +84,20 @@ class CharList extends Component {
                 <ul className="char__grid">
                     {content}
                 </ul>
-                <button className="button button__main button__long">
+                <button 
+                    className="button button__main button__long"
+                    disabled={newItemLoading}
+                    style={{'display': charEnded ? 'none' : 'block'}}
+                    onClick={() => this.onRequest(offset)}>
                     <div className="inner">load more</div>
                 </button>
             </div>
         )
     }
+}
+
+CharList.propTypes = {
+    charId: PropTypes.number
 }
 
 export default CharList;

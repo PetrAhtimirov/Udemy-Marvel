@@ -25,6 +25,10 @@
             width: 150px;
             height: 150px;
             object-fit: cover;
+
+            &.not_found {
+                object-fit: contain;
+            }
         }
     }
     &__btns {
