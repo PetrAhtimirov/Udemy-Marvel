@@ -7,6 +7,7 @@ import './charList.scss';
 import MarvelServise from '../../services/MarvelService';
 
 class CharList extends Component {
+
     state = {
         charList: [],
         loading: true,
@@ -58,17 +59,41 @@ class CharList extends Component {
             .catch(this.onError);
     }
 
+    itemRefs = [];
+
+    setRef = (ref) => {
+        this.itemRefs.push(ref);
+    }
+
+    focusOnItem = (id) => {
+        this.itemRefs.forEach(item => item.classList.remove('char__item__selected'));
+        this.itemRefs[id].classList.add('char__item__selected');
+        this.itemRefs[id].focus();
+    }
+
     render () {
         const {charList, loading, error, offset, newItemLoading, charEnded} = this.state;
         const errorMessage = error ? <ErrorMessage/> : null;
         const spinner = loading ? <Spinner/> : null;
 
-        const elements = charList.map(item => {
+        const elements = charList.map((item, i) => {
             return (
                 <li 
                     className="char__item" 
+                    tabIndex={0}
                     key={item.id}
-                    onClick={() => this.props.onCharSelected(item.id)}>
+                    ref={this.setRef}
+                    onClick={() => {
+                        this.props.onCharSelected(item.id);
+                        this.focusOnItem(i);
+                    }}
+                    onKeyDown={(e) => {
+                        if (e.key === ' ' || e.key === 'Enter') {
+                            e.preventDefault();
+                            this.props.onCharSelected(item.id);
+                            this.focusOnItem(i);
+                        }
+                    }}>
                     <img src={item.thumbnail} alt={item.name}/>
                     <div className="char__name">{item.name}</div>
                 </li>
