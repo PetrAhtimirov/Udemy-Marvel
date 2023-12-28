@@ -10,7 +10,7 @@ const CharList = (props) => {
     const [charList, setCharList] = useState([]);
     const [newItemLoading, setNewItemLoading] = useState(false);
     const [offset, setOffset] = useState(700);
-    const [charEnded, setChatEnded] = useState(false);
+    const [charEnded, setCharEnded] = useState(false);
 
     const { loading, error, getAllCharacters } = useMarvelServise();
 
@@ -23,15 +23,11 @@ const CharList = (props) => {
         getAllCharacters(offset).then(onCharListLoaded);
     };
 
-    const onCharListLoading = () => {
-        setNewItemLoading(true);
-    };
-
     const onCharListLoaded = (newCharList) => {
         setCharList((charList) => [...charList, ...newCharList]);
         setNewItemLoading(false);
         setOffset((offset) => offset + 9);
-        setChatEnded(newCharList.length < 9);
+        setCharEnded(newCharList.length < 9);
     };
 
     const itemRefs = useRef([]);
