@@ -27,18 +27,6 @@ const useMarvelServise = () => {
         };
     };
 
-    const getAllCharacters = async (offset = _baseOffset) => {
-        const res = await request(
-            `${_apiBase}characters?limit=9&offset=${offset}&${_apiKey}`
-        );
-        return res.data.results.map(_transformCharacter);
-    };
-
-    const getCharacter = async (id) => {
-        const res = await request(`${_apiBase}characters/${id}?${_apiKey}`);
-        return _transformCharacter(res.data.results[0]);
-    };
-
     const _transformComics = (comics) => {
         return {
             id: comics.id,
@@ -53,6 +41,25 @@ const useMarvelServise = () => {
             thumbnail: `${comics.thumbnail.path}.${comics.thumbnail.extension}`,
             language: comics.textObjects.language || 'en-us',
         };
+    };
+
+    const getAllCharacters = async (offset = _baseOffset) => {
+        const res = await request(
+            `${_apiBase}characters?limit=9&offset=${offset}&${_apiKey}`
+        );
+        return res.data.results.map(_transformCharacter);
+    };
+
+    const getCharacter = async (id) => {
+        const res = await request(`${_apiBase}characters/${id}?${_apiKey}`);
+        return _transformCharacter(res.data.results[0]);
+    };
+
+    const getCharacterComics = async (id) => {
+        const res = await request(
+            `${_apiBase}characters/${id}/comics?orderBy=modified&${_apiKey}`
+        );
+        return res.data.results.map(_transformComics);
     };
 
     const getAllComics = async (offset = _baseOffset) => {
@@ -72,6 +79,7 @@ const useMarvelServise = () => {
         error,
         getAllCharacters,
         getCharacter,
+        getCharacterComics,
         getAllComics,
         getComic,
         clearError,

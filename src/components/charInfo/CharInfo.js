@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import Spinner from '../spinner/Spinner';
@@ -11,20 +12,23 @@ import './charInfo.scss';
 const CharInfo = (props) => {
     const [char, setChar] = useState(null);
 
-    const { loading, error, getCharacter, clearError } = useMarvelService();
+    const { loading, error, getCharacter, getCharacterComics, clearError } =
+        useMarvelService();
 
     useEffect(() => {
         updateChar();
     }, [props.charId]);
 
-    const updateChar = () => {
+    const updateChar = async () => {
         clearError();
         const { charId } = props;
         if (!charId) {
             return;
         }
 
-        getCharacter(charId).then(onCharLoaded);
+        let char = await getCharacter(charId);
+        char.comics = await getCharacterComics(charId);
+        onCharLoaded(char);
     };
 
     const onCharLoaded = (char) => {
@@ -78,7 +82,7 @@ const View = ({ char }) => {
                 {comics.slice(0, 10).map((item, i) => {
                     return (
                         <li key={i} className="char__comics-item">
-                            {item.name}
+                            <Link to={`/comics/${item.id}`}>{item.title}</Link>
                         </li>
                     );
                 })}

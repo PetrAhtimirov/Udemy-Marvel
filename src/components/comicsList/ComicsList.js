@@ -20,7 +20,6 @@ const ComicsList = () => {
 
     const onRequest = (offset, initial) => {
         initial ? setNewItemLoading(false) : setNewItemLoading(true);
-        console.log('sosiski');
         getAllComics(offset).then(onComicsListLoaded);
     };
 
