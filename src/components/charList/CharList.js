@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Spinner from '../spinner/Spinner';
-import './charList.scss';
 import useMarvelServise from '../../services/MarvelService';
+
+import './charList.scss';
 
 const CharList = (props) => {
     const [charList, setCharList] = useState([]);
