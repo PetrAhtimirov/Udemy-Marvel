@@ -16,7 +16,7 @@ const SingleCharacterLayout = lazy(() =>
 
 const App = () => {
     return (
-        <Router>
+        <Router basename="/Udemy-Marvel">
             <div className="app">
                 <AppHeader />
                 <main>
