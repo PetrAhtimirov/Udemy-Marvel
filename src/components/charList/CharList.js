@@ -40,30 +40,34 @@ const CharList = (props) => {
         itemRefs.current[id].focus();
     };
 
-    const items = charList.map((item, i) => {
-        return (
-            <li
-                className="char__item"
-                tabIndex={0}
-                key={item.id}
-                ref={(el) => (itemRefs.current[i] = el)}
-                onClick={() => {
-                    props.onCharSelected(item.id);
-                    focusOnItem(i);
-                }}
-                onKeyDown={(e) => {
-                    if (e.key === ' ' || e.key === 'Enter') {
-                        e.preventDefault();
-                        props.onCharSelected(item.id);
-                        focusOnItem(i);
-                    }
-                }}
-            >
-                <img src={item.thumbnail} alt={item.name} />
-                <div className="char__name">{item.name}</div>
-            </li>
-        );
-    });
+    const items = (
+        <ul className="char__grid">
+            {charList.map((item, i) => {
+                return (
+                    <li
+                        className="char__item"
+                        tabIndex={0}
+                        key={item.id}
+                        ref={(el) => (itemRefs.current[i] = el)}
+                        onClick={() => {
+                            props.onCharSelected(item.id);
+                            focusOnItem(i);
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === ' ' || e.key === 'Enter') {
+                                e.preventDefault();
+                                props.onCharSelected(item.id);
+                                focusOnItem(i);
+                            }
+                        }}
+                    >
+                        <img src={item.thumbnail} alt={item.name} />
+                        <div className="char__name">{item.name}</div>
+                    </li>
+                );
+            })}
+        </ul>
+    );
 
     const errorMessage = error ? <ErrorMessage /> : null;
     const spinner = loading && !newItemLoading ? <Spinner /> : null;
@@ -72,7 +76,7 @@ const CharList = (props) => {
         <div className="char__list">
             {errorMessage}
             {spinner}
-            <ul className="char__grid">{items}</ul>
+            {items}
             <button
                 className="button button__main button__long"
                 disabled={newItemLoading}
